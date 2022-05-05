@@ -2,7 +2,7 @@ import React from "react";
 import Codearea from "./components/Codearea";
 import Recording from "./components/Recording";
 import Download from "./components/Download";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import MyProvider from "./components/MyProvider";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
 
   return (
     <MyProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route
             exact
@@ -46,7 +46,7 @@ function App() {
             element={<Download source={source} vid2={vid} />}
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </MyProvider>
   );
 }
