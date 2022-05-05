@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&display=swap');
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 0; 
+    background: transparent; 
+}
+
+nav{
+    /* border: 1px solid red;   */
+    height: 10vh;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 100px 0;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+h2{
+  margin: 0% 3% ;
+}
+
+#btn-record{
+    margin-right: 5%;
+    padding: 8px 14px;
+    font-size: medium;
+    font-weight: 900;
+    color: #fff;
+    background-color: rgb(1, 175, 10);
+    border: none;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+#container1{
+    /* border: 1px solid green; */
+    display: block;
+    margin: 0.5% auto;
+    width: 60%;
+    height: 85vh;
+    border-radius: 2%;
+    background-color: rgb(214, 214, 214);
+}
+#textarea1{
+    border: none;
+    /* border: 1px solid rgb(0, 128, 107); */
+    background-color: rgb(214, 214, 214);
+    outline: none;
+    padding: 2%;
+    resize: none;
+    font-size: larger;
+    font-family: 'Fira Code', monospace;
+    height: 100%;
+    width: 95%;
+    border-radius: 2%;
+}
+#count-num1{
+    display: inline-block;
+    /* border: 1px solid red; */
+    resize: none;
+    font-size: larger;
+    font-family: 'Fira Code', monospace;
+    width: 4.1%;
+    height: 100%;
+    position: relative;
+    left: 1%;
+    padding: 2% 0%; 
+    overflow: scroll;
+    background-color: rgb(214, 214, 214);
+    text-align: center;
+    background-color: transparent;
+}
+
