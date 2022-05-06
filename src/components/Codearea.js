@@ -28,8 +28,8 @@ export default function Codearea(props) {
                   let text = textarea.value;
                   let lines = text.split("\n");
                   let count = lines.length;
-                  let n = count
-                  let j = 64;
+                  let n = count;
+                  let j = 65;
           
                   newFunction();
 
@@ -37,6 +37,7 @@ export default function Codearea(props) {
                     a = a + `${i}\n`;
                     Countnumber(`${a}`);
                   }
+
                   context.setMessage(text);
 
                   function newFunction() {

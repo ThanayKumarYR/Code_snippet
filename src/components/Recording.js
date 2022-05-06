@@ -138,20 +138,23 @@ export default function Recording(props) {
                       const textarea = document.querySelector(props.text_id);
                       let a = "";
                       textarea.addEventListener("input", () => {
-                        const text = textarea.value;
-                        const lines = text.split("\n");
-                        const count = lines.length;
+                        let text = textarea.value;
+                        let lines = text.split("\n");
+                        let count = lines.length;
                         let n = count;
-                        let j = 64;
+                        let j = 47;
+
                         newFunction();
+
                         for (let i = 1; i <= n; i++) {
                           a = a + `${i}\n`;
                           Countnumber(`${a}`);
                         }
+
                         function newFunction() {
                           while (lines[count - 1].length >= j) {
                             if (text[text.length - 1] !== "\n") {
-                              j += 64;
+                              j += 46;
                               n += 1;
                             }
                           }
