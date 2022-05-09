@@ -7,6 +7,7 @@ import { MContext } from "./MyProvider";
 
 export default function Recording(props) {
   const [number, Countnumber] = useState(`1`);
+  let stream2, audioTrack, videoTrack;
 
   const video = () => {
     let constraintObj = {
@@ -47,7 +48,6 @@ export default function Recording(props) {
           console.log(err.name, err.message);
         });
     }
-
     navigator.mediaDevices
       .getUserMedia(constraintObj)
       .then(function(mediaStreamObj) {
@@ -67,7 +67,6 @@ export default function Recording(props) {
         };
 
         const starting = async () => {
-          let stream2, audioTrack, videoTrack;
           navigator.mediaDevices
             .getDisplayMedia({
               video: {
@@ -82,7 +81,8 @@ export default function Recording(props) {
                   throw e;
                 });
               [audioTrack] = audioStream.getAudioTracks();
-              stream2 = new MediaStream([videoTrack, audioTrack]);
+              stream2 = new MediaStream([videoTrack,audioTrack]);
+              // console.log( audioTrack);
               const mediaRecorder = new MediaRecorder(stream2);
               const data = [];
               mediaRecorder.ondataavailable = (e) => {
@@ -154,9 +154,7 @@ export default function Recording(props) {
                         let count = lines.length;
                         let n = count;
                         let j = 47;
-
                         newFunction();
-
                         for (let i = 1; i <= n; i++) {
                           a = a + `${i}\n`;
                           Countnumber(`${a}`);
@@ -200,7 +198,9 @@ export default function Recording(props) {
               <canvas id="canva"></canvas>
               <div id="divStop">
                 <Link to="/Download">
-                  <button id="btnStop">Next{"->"}</button>
+                  <button id="btnStop" onClick={()=>{
+                      context.setAadio(stream2);
+                  }}>Next{"->"}</button>
                 </Link>
               </div>
               <button id="btnStart" onClick={video}>

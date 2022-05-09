@@ -1,5 +1,6 @@
 import React from "react";
 import "./Recording.css";
+import { MContext } from "./MyProvider";
 
 export default function download(props) {
   const starting = async (stream1) => {
@@ -21,9 +22,10 @@ export default function download(props) {
         });
         document.getElementById("success").src = URL.createObjectURL(myFlie);
       }, 1000);
-      
+
       setTimeout(() => {
         let video = document.getElementById("success");
+        video.muted = false;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", video.src, true);
         xhr.responseType = "blob";
@@ -56,53 +58,68 @@ export default function download(props) {
     let ctx = canvas.getContext("2d");
     loop();
   }
-  const play = (e) => {
-    const video = document.getElementById(props.vid2);
-    video.muted = false;
-    const playButton = document.getElementById("play-button");
-    if (video.paused) {
-      video.play();
-      e.target.textContent = "⏸︎";
-      let a = playButton.style;
-      a.padding = "0";
-      a.opacity = "0.1";
-      let canvas = document.getElementById("cropCvs");
-      const streaming = canvas.captureStream();
-      const st = new MediaStream(streaming);
-      starting(st);
-    } else {
-      video.pause();
-      e.target.textContent = "▶";
-      let a = playButton.style;
-      a.padding = "7px";
-      a.opacity = "0.5";
-    }
-  };
-
   return (
-    <>
-      <div id="box">
-        <video
-          id={props.vid2}
-          height="360"
-          width="640"
-          controls
-          onPlay={handleplay}
-          onEnded={() => {
-            const playButton = document.getElementById("play-button");
-            let a = playButton.style;
-            playButton.innerText = "▶";
-            a.padding = "7px";
-            a.opacity = "0.5";
-          }}
-        ></video>
-        <button id="play-button" onClick={play}>
-          ▶
-        </button>
-        <button id="download-btn">Download</button>
-        <canvas id="cropCvs" width="640" height="360"></canvas>
-        <video id="success" playsInline autoPlay="autoplay" controls></video>
-      </div>
-    </>
+    <MContext.Consumer>
+      {(context) => (
+        <>
+          <div id="box">
+            <video
+              id={props.vid2}
+              height="360"
+              width="640"
+              controls
+              onPlay={handleplay}
+              onEnded={() => {
+                const playButton = document.getElementById("play-button");
+                let a = playButton.style;
+                playButton.innerText = "▶";
+                a.padding = "7px";
+                a.opacity = "0.5";
+              }}
+            ></video>
+            <button
+              id="play-button"
+              onClick={(e) => {
+                const video = document.getElementById(props.vid2);
+                const playButton = document.getElementById("play-button");
+                if (video.paused) {
+                  let audioTrack;
+                  let videoTrack;
+                  video.play();
+                  e.target.textContent = "⏸︎";
+                  let a = playButton.style;
+                  a.padding = "0";
+                  a.opacity = "0.1";
+                  let canvas = document.getElementById("cropCvs");
+                  const streaming = canvas.captureStream();
+                  // console.log(context.state.aadio);
+                  [audioTrack] = context.state.aadio.getAudioTracks();
+                  [videoTrack] = streaming.getVideoTracks();
+                  const st = new MediaStream([videoTrack,audioTrack]);
+                  starting(st);
+
+                } else {
+                  video.pause();
+                  e.target.textContent = "▶";
+                  let a = playButton.style;
+                  a.padding = "7px";
+                  a.opacity = "0.5";
+                }
+              }}
+            >
+              ▶
+            </button>
+            <button id="download-btn">Download</button>
+            <canvas id="cropCvs" width="640" height="360"></canvas>
+            <video
+              id="success"
+              playsInline
+              autoPlay="autoplay"
+              controls
+            ></video>
+          </div>
+        </>
+      )}
+    </MContext.Consumer>
   );
 }
