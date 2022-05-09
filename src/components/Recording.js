@@ -53,33 +53,28 @@ export default function Recording(props) {
       .then(function(mediaStreamObj) {
         // connect the media stream to the first video element
         let video = document.querySelector("video");
+        
         if ("srcObject" in video) {
           video.srcObject = mediaStreamObj;
         } else {
           //old version
           video.src = window.URL.createObjectURL(mediaStreamObj);
         }
-
+        video.muted = false;
         video.onloadedmetadata = function(ev) {
           //show in the video element what is being captured by the webcam
           video.play();
         };
 
         const starting = async () => {
-          // var canvasElt = document.getElementById("canva");
-          // var stream1 = canvasElt.captureStream(25);
-          // var vid = document.getElementById("vd");
-          // vid.srcObject = stream1;
-          // vid.onloadedmetadata = function(e) {
-          //   vid.play();
-          // };
 
-          const stream = await navigator.mediaDevices.getDisplayMedia({
+          const stream = await navigator.mediaDevices.getDisplayMedia ({
             audio: true,
             video: {
               MediaSource: "screen",
             },
           });
+
           const data = [];
           const mediaRecorder = new MediaRecorder(stream);
           mediaRecorder.ondataavailable = (e) => {
@@ -99,7 +94,6 @@ export default function Recording(props) {
                 document.getElementById(props.vid2).src = URL.createObjectURL(
                   myFlie
                 );
-                // document.getElementById(props.vid2).src = "demo.mp4";
               }, 1000);
             });
             const video = document.getElementById("vid");

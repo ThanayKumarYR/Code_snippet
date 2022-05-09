@@ -225,3 +225,14 @@ canvas{
     z-index: 2;
     opacity: 0.5;
 }
+
+#success{
+    border: 1px solid red;
+    width: 640px;
+    height: 360px;
+    position: absolute;
+    top: 13%;
+    left: 30%;
+    z-index: -99;
+
+}
