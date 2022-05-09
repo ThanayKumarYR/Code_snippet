@@ -53,7 +53,7 @@ export default function Recording(props) {
       .then(function(mediaStreamObj) {
         // connect the media stream to the first video element
         let video = document.querySelector("video");
-        
+
         if ("srcObject" in video) {
           video.srcObject = mediaStreamObj;
         } else {
@@ -67,41 +67,58 @@ export default function Recording(props) {
         };
 
         const starting = async () => {
-
-          const stream = await navigator.mediaDevices.getDisplayMedia ({
-            audio: true,
-            video: {
-              MediaSource: "screen",
-            },
-          });
-
-          const data = [];
-          const mediaRecorder = new MediaRecorder(stream);
-          mediaRecorder.ondataavailable = (e) => {
-            data.push(e.data);
-          };
-          mediaRecorder.start();
-          mediaRecorder.onstop = (e) => {
-            let stop = document.getElementById("btnStop");
-            stop.addEventListener("click", (e) => {
-              setTimeout(() => {
-                const myBlob = new Blob(data, {
-                  type: "video/mp4;",
+          let stream2, audioTrack, videoTrack;
+          navigator.mediaDevices
+            .getDisplayMedia({
+              video: {
+                mediaSource: "screen",
+              },
+            })
+            .then(async (displayStream) => {
+              [videoTrack] = displayStream.getVideoTracks();
+              const audioStream = await navigator.mediaDevices
+                .getUserMedia({ audio: true })
+                .catch((e) => {
+                  throw e;
                 });
-                const myFlie = new File([myBlob], "demo.mp4", {
-                  type: "video/mp4",
+              [audioTrack] = audioStream.getAudioTracks();
+              stream2 = new MediaStream([videoTrack, audioTrack]);
+              const mediaRecorder = new MediaRecorder(stream2);
+              const data = [];
+              mediaRecorder.ondataavailable = (e) => {
+                data.push(e.data);
+              };
+              mediaRecorder.start();
+
+              function stoplocalStream(localStream) {
+                console.log("stop called");
+                localStream.getAudioTracks()[0].stop();
+                localStream.getVideoTracks()[0].stop();
+                console.log("Stopped, state = " + mediaRecorder.state);
+                //shows recording
+              }
+                let stop = document.getElementById("btnStop");
+                stop.addEventListener("click", (e) => {
+                  stoplocalStream(stream2);
+                  setTimeout(() => {
+                    const myBlob = new Blob(data, {
+                      type: "video/mp4;",
+                    });
+                    const myFlie = new File([myBlob], "demo.mp4", {
+                      type: "video/mp4;",
+                    });
+                    document.getElementById(
+                      props.vid2
+                    ).src = URL.createObjectURL(myFlie);
+                  }, 1000);
+                  const video = document.getElementById("vid");
+                  const mediaStream = video.srcObject;
+                  const tracks = mediaStream.getTracks();
+                  tracks[0].stop();
+                  tracks.forEach((track) => track.stop());
                 });
-                document.getElementById(props.vid2).src = URL.createObjectURL(
-                  myFlie
-                );
-              }, 1000);
-            });
-            const video = document.getElementById("vid");
-            const mediaStream = video.srcObject;
-            const tracks = mediaStream.getTracks();
-            tracks[0].stop();
-            tracks.forEach((track) => track.stop());
-          };
+            })
+            .catch(console.error);
         };
         let divstop = document.getElementById("divStop");
         divstop.style.zIndex = "0";

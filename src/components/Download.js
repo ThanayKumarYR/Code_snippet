@@ -12,7 +12,7 @@ export default function download(props) {
     let stop = document.getElementById("download-btn");
     stop.addEventListener("click", (e) => {
       mediaRecorder.stop();
-      setTimeout(()=>{
+      setTimeout(() => {
         const myBlob = new Blob(data, {
           type: "video/mp4;",
         });
@@ -20,7 +20,8 @@ export default function download(props) {
           type: "video/mp4",
         });
         document.getElementById("success").src = URL.createObjectURL(myFlie);
-      },1000);
+      }, 1000);
+      
       setTimeout(() => {
         let video = document.getElementById("success");
         var xhr = new XMLHttpRequest();
@@ -67,7 +68,7 @@ export default function download(props) {
       a.opacity = "0.1";
       let canvas = document.getElementById("cropCvs");
       const streaming = canvas.captureStream();
-      const st = new MediaStream(streaming)
+      const st = new MediaStream(streaming);
       starting(st);
     } else {
       video.pause();
