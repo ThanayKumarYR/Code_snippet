@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import logo1 from "../record-img.png";
 import back from "../back.png";
 import "./Recording.css";
 import { Link, Outlet } from "react-router-dom";
 import { MContext } from "./MyProvider";
+import Editor from "@monaco-editor/react";
 
 export default function Recording(props) {
-  const [number, Countnumber] = useState(`1`);
-  let stream2, audioTrack, videoTrack;
+  let stream2, audioTrack, videoTrack, adio;
 
   const video = () => {
     let constraintObj = {
@@ -16,8 +16,8 @@ export default function Recording(props) {
         facingMode: { exact: "user" },
         // width: { min: 640, ideal: 1280, max: 1920 },
         // height: { min: 480, ideal: 720, max: 1080 }
-        width: 435,
-        height: 1000,
+        width: 395,
+        height: 1200,
       },
     };
 
@@ -81,15 +81,14 @@ export default function Recording(props) {
                   throw e;
                 });
               [audioTrack] = audioStream.getAudioTracks();
-              stream2 = new MediaStream([videoTrack,audioTrack]);
-              // console.log( audioTrack);
+              stream2 = new MediaStream([videoTrack, audioTrack]);
+              adio = audioStream;
               const mediaRecorder = new MediaRecorder(stream2);
               const data = [];
               mediaRecorder.ondataavailable = (e) => {
                 data.push(e.data);
               };
               mediaRecorder.start();
-
               function stoplocalStream(localStream) {
                 console.log("stop called");
                 localStream.getAudioTracks()[0].stop();
@@ -97,37 +96,39 @@ export default function Recording(props) {
                 console.log("Stopped, state = " + mediaRecorder.state);
                 //shows recording
               }
-                let stop = document.getElementById("btnStop");
-                stop.addEventListener("click", (e) => {
-                  stoplocalStream(stream2);
-                  setTimeout(() => {
-                    const myBlob = new Blob(data, {
-                      type: "video/mp4;",
-                    });
-                    const myFlie = new File([myBlob], "demo.mp4", {
-                      type: "video/mp4;",
-                    });
-                    document.getElementById(
-                      props.vid2
-                    ).src = URL.createObjectURL(myFlie);
-                  }, 1000);
-                  const video = document.getElementById("vid");
-                  const mediaStream = video.srcObject;
-                  const tracks = mediaStream.getTracks();
-                  tracks[0].stop();
-                  tracks.forEach((track) => track.stop());
-                });
+              let stop = document.getElementById("btnStop");
+              stop.addEventListener("click", (e) => {
+                stoplocalStream(stream2);
+                setTimeout(() => {
+                  const myBlob = new Blob(data, {
+                    type: "video/mp4;",
+                  });
+                  const myFlie = new File([myBlob], "demo.mp4", {
+                    type: "video/mp4;",
+                  });
+                  document.getElementById(props.vid2).src = URL.createObjectURL(
+                    myFlie
+                  );
+                }, 1000);
+                const video = document.getElementById("vid");
+                const mediaStream = video.srcObject;
+                const tracks = mediaStream.getTracks();
+                tracks[0].stop();
+                tracks.forEach((track) => track.stop());
+              });
             })
             .catch(console.error);
         };
         let divstop = document.getElementById("divStop");
-        divstop.style.zIndex = "0";
+        divstop.style.zIndex = "10";
         starting();
       })
       .catch(function(err) {
         console.log(err.name, err.message);
       });
   };
+
+  const editorRef = useRef(null);
 
   return (
     <>
@@ -140,67 +141,31 @@ export default function Recording(props) {
               </Link>
               <div id="record">
                 <div id="container">
-                  <div id="count-num">{number}</div>
-                  <textarea
-                    name="textarea"
-                    id={props.text_id}
-                    placeholder="Click here and press Enter twice to see the code entered just now!"
-                    onChange={() => {
-                      const textarea = document.querySelector(props.text_id);
-                      let a = "";
-                      textarea.addEventListener("input", () => {
-                        let text = textarea.value;
-                        let lines = text.split("\n");
-                        let count = lines.length;
-                        let n = count;
-                        let j = 47;
-                        newFunction();
-                        for (let i = 1; i <= n; i++) {
-                          a = a + `${i}\n`;
-                          Countnumber(`${a}`);
-                        }
-
-                        function newFunction() {
-                          while (lines[count - 1].length >= j) {
-                            if (text[text.length - 1] !== "\n") {
-                              j += 46;
-                              n += 1;
-                            }
-                          }
-                        }
-                      });
-                      var isSyncingLeftScroll = false;
-                      var isSyncingRightScroll = false;
-                      var leftDiv = document.getElementById(props.text_id);
-                      var rightDiv = document.getElementById("count-num");
-
-                      leftDiv.onscroll = function() {
-                        if (!isSyncingLeftScroll) {
-                          isSyncingRightScroll = true;
-                          rightDiv.scrollTop = this.scrollTop;
-                        }
-                        isSyncingLeftScroll = false;
-                      };
-                      rightDiv.onscroll = function() {
-                        if (!isSyncingRightScroll) {
-                          isSyncingLeftScroll = true;
-                          leftDiv.scrollTop = this.scrollTop;
-                        }
-                        isSyncingRightScroll = false;
-                      };
-                    }}
-                  >
-                    {context.state.message}
-                  </textarea>
+                  <div id="Monoco">
+                      <Editor
+                        height="70vh"
+                        theme="vs-dark"
+                        path= {context.state.path}
+                        defaultLanguage= {context.state.dL}
+                        defaultValue= {context.state.dV}
+                        onMount={(editor) => {
+                          editorRef.current = editor;
+                        }}
+                      />
+                  </div>
                 </div>
                 <video id="vid"></video>
               </div>
-              <canvas id="canva"></canvas>
               <div id="divStop">
                 <Link to="/Download">
-                  <button id="btnStop" onClick={()=>{
-                      context.setAadio(stream2);
-                  }}>Next{"->"}</button>
+                  <button
+                    id="btnStop"
+                    onClick={() => {
+                      context.setAadio(adio);
+                    }}
+                  >
+                    Next{"->"}
+                  </button>
                 </Link>
               </div>
               <button id="btnStart" onClick={video}>

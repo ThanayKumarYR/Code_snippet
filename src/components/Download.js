@@ -51,7 +51,7 @@ export default function download(props) {
   function handleplay() {
     function loop() {
       let video = document.getElementById(props.vid2);
-      ctx.drawImage(video, 280, 180, 810, 420, 0, 0, 640, 360);
+      ctx.drawImage(video, 210, 145, 950, 500, 0, 0, 640, 360);
       setTimeout(loop, 1000 / 30);
     }
     let canvas = document.getElementById("cropCvs");
@@ -95,9 +95,8 @@ export default function download(props) {
                   // console.log(context.state.aadio);
                   [audioTrack] = context.state.aadio.getAudioTracks();
                   [videoTrack] = streaming.getVideoTracks();
-                  const st = new MediaStream([videoTrack,audioTrack]);
+                  const st = new MediaStream([videoTrack, audioTrack]);
                   starting(st);
-
                 } else {
                   video.pause();
                   e.target.textContent = "▶";

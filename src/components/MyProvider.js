@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 export const MContext = React.createContext();
 export default class Myprovider extends Component {
     state = {message: "",
-            aadio:null}
+            aadio:null,
+            path: '',
+            dL:'',
+            dV:''          
+          }
   render() {
     return (
       <div>
@@ -11,7 +15,13 @@ export default class Myprovider extends Component {
                 setMessage: (value) => this.setState({
                             message: value }),
                 setAadio:  (value)=> this.setState({
-                            aadio: value})}}>
+                            aadio: value}),
+                setpath:  (value) => this.setState({
+                            path: value}),           
+                setdL:  (value) => this.setState({
+                            dL: value}),           
+                setdV:  (value) => this.setState({
+                            dV: value})}}>
             {this.props.children}   
         </MContext.Provider>
       </div>
