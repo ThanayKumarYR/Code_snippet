@@ -99,18 +99,20 @@ export default function Codearea(props) {
                     onChange={changeFunc}
                     outline={'none'}
                     cursor = 'pointer'
+                    height={30}
+                    fontSize = {20}
                     _hover={{ bg:"rgb(129, 129, 129)",borderColor:"rgb(129, 129, 129)"} }
                   >
                     <option value="sample.c">C</option>
                     <option value="sample.cpp">C++</option>
-                    <option value="style.css">css</option>
-                    <option value="index.html">html</option>
-                    <option value="a.java">java</option>
-                    <option value="script.js">javascript</option>
+                    <option value="style.css">CSS</option>
+                    <option value="index.html">HTML</option>
+                    <option value="a.java">Java</option>
+                    <option value="script.js">Javascript</option>
                     <option value="index.json">json</option>
-                    <option value="a.py">python</option>
+                    <option value="a.py">Python</option>
                     <option value="a.txt">text</option>
-                    <option value="foo-bar.ts">typescript</option>
+                    <option value="foo-bar.ts">Typescript</option>
                   </Select>
                   </div>
                 </div>
